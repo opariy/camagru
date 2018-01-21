@@ -11,7 +11,7 @@ class Posts
     public function edit()
     {
         echo "Hello from the edit action in the Posts Controller";
-        echo '<p>Route parameters: <pre>'.htmlspecialchars(print_r($this->route_params, true)).'</pre></p>';
+//        echo '<p>Route parameters: <pre>'.htmlspecialchars(print_r($this->route_params, true)).'</pre></p>';
     }
 }
 

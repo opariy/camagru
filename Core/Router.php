@@ -7,20 +7,44 @@ class Router
 
     public function add($route, $params = [])
     {
+        echo '<pre>';
+        echo 'initial';
+        var_dump($route);
+        echo '</pre>';
         // Convert the route to a regular expression: escape forward slashes
         $route = preg_replace('/\//', '\\/', $route);
-
+        echo '<pre>';
+        echo 'escape';
+        var_dump($route);
+        echo '</pre>';
         // Convert variables e.g. {controller}
         $route = preg_replace('/\{([a-z]+)\}/', '(?P<\1>[a-z-]+)', $route);
-
+        echo '<pre>';
+        echo 'Convert';
+        var_dump($route);
+        echo '</pre>';
         // Convert variables with custom regular expressions e.g. {id:\d+}
         $route = preg_replace('/\{([a-z]+):([^\}]+)\}/', '(?P<\1>\2)', $route);
-
+        echo '<pre>';
+        echo 'custom';
+        var_dump($route);
+        echo '</pre>';
         // Add start and end delimiters, and case insensitive flag
         $route = '/^' . $route . '$/i';
-
+        echo '<pre>';
+        echo 'start end ';
+        var_dump($route);
+        echo '=================';
+        echo '</pre>';
         $this->routes[$route] = $params;
     }
+
+//$router->add('', ['controller' => 'Home', 'action' => 'index']);
+//$router->add('posts', ['controller' => 'Posts', 'action' => 'index']);
+//$router->add('my/own/url/test/442', ['controller' => 'MyOwnController', 'action' => 'action']);
+//$router->add('{controller}/{action}');
+////$router->add('admin/{action}/{controller}');
+//$router->add('{controller}/{id:\d+}/{action}');
 
 
     public function getRoutes()
@@ -43,7 +67,6 @@ class Router
                 return true;
             }
         }
-
         return false;
     }
 
@@ -54,19 +77,20 @@ class Router
 
     public function dispatch($url)
     {
-        echo 'url';
-        var_dump($url);
-        $url = $this->removeQueryStringVariables($url);
-        var_dump($url);
+//        echo 'url';
+//        var_dump($url);
+//        $url = $this->removeQueryStringVariables($url);
+//        var_dump($url);
         if ($this->match($url)) {
             $controller = $this->params['controller'];
             $controller = $this->convertToStudlyCaps($controller);
-            $controller = $this->getNamespace() . $controller;
+//            $controller = $this->getNamespace() . $controller;
             if (class_exists($controller)) {
                 $controller_object = new $controller($this->params);
                 $action = $this->params['action'];
                 $action = $this->convertToCamelCase($action);
-                if (preg_match('/action$/i', $action) == 0) {
+//                if (preg_match('/action$/i', $action) == 0) {
+                if (is_callable([$controller_object, $action])) {
                     $controller_object->$action();
                 } else {
                     echo "Method $action in controller $controller cannot be called directly - remove the Action suffix to call this method";
