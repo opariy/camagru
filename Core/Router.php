@@ -1,51 +1,26 @@
 <?php
 
+namespace Core;
+
 class Router
 {
     protected $routes = [];
     protected $params = [];
 
+
+
     public function add($route, $params = [])
     {
-        echo '<pre>';
-        echo 'initial';
-        var_dump($route);
-        echo '</pre>';
         // Convert the route to a regular expression: escape forward slashes
         $route = preg_replace('/\//', '\\/', $route);
-        echo '<pre>';
-        echo 'escape';
-        var_dump($route);
-        echo '</pre>';
         // Convert variables e.g. {controller}
         $route = preg_replace('/\{([a-z]+)\}/', '(?P<\1>[a-z-]+)', $route);
-        echo '<pre>';
-        echo 'Convert';
-        var_dump($route);
-        echo '</pre>';
         // Convert variables with custom regular expressions e.g. {id:\d+}
         $route = preg_replace('/\{([a-z]+):([^\}]+)\}/', '(?P<\1>\2)', $route);
-        echo '<pre>';
-        echo 'custom';
-        var_dump($route);
-        echo '</pre>';
         // Add start and end delimiters, and case insensitive flag
         $route = '/^' . $route . '$/i';
-        echo '<pre>';
-        echo 'start end ';
-        var_dump($route);
-        echo '=================';
-        echo '</pre>';
         $this->routes[$route] = $params;
     }
-
-//$router->add('', ['controller' => 'Home', 'action' => 'index']);
-//$router->add('posts', ['controller' => 'Posts', 'action' => 'index']);
-//$router->add('my/own/url/test/442', ['controller' => 'MyOwnController', 'action' => 'action']);
-//$router->add('{controller}/{action}');
-////$router->add('admin/{action}/{controller}');
-//$router->add('{controller}/{id:\d+}/{action}');
-
 
     public function getRoutes()
     {
@@ -54,15 +29,12 @@ class Router
 
     public function match($url)
     {
+
         foreach ($this->routes as $route => $params) {
             if (preg_match($route, $url, $matches)) {
-
                 foreach ($matches as $key => $match) {
-                    if (is_string($key)) {
                         $params[$key] = $match;
-                    }
                 }
-
                 $this->params = $params;
                 return true;
             }
@@ -70,40 +42,31 @@ class Router
         return false;
     }
 
-    public function getParams()
-    {
-        return $this->params;
-    }
-
     public function dispatch($url)
     {
-//        echo 'url';
-//        var_dump($url);
-//        $url = $this->removeQueryStringVariables($url);
-//        var_dump($url);
+
+        $url = $this->removeQueryStringVariables($url);
         if ($this->match($url)) {
             $controller = $this->params['controller'];
             $controller = $this->convertToStudlyCaps($controller);
-//            $controller = $this->getNamespace() . $controller;
+            $controller = $this->getNamespace(). $controller;
+//            echo "<br>" . "looking for controller ". $controller. "<br>";
             if (class_exists($controller)) {
                 $controller_object = new $controller($this->params);
+
                 $action = $this->params['action'];
                 $action = $this->convertToCamelCase($action);
-//                if (preg_match('/action$/i', $action) == 0) {
+//                echo "<br>" . "looking for action ". $action. "<br>";
                 if (is_callable([$controller_object, $action])) {
                     $controller_object->$action();
                 } else {
-                    echo "Method $action in controller $controller cannot be called directly - remove the Action suffix to call this method";
-
-//                    throw new \Exception("Method $action in controller $controller cannot be called directly - remove the Action suffix to call this method");
+                    throw new \Exception("Method $action in controller $controller cannot be called directly - remove the Action suffix to call this method");
                 }
             } else {
-                echo "Controller class $controller not found";
-//                throw new \Exception("Controller class $controller not found");
+                throw new \Exception("Controller class $controller not found");
             }
         } else {
-            echo 'No route matched';
-//            throw new \Exception('No route matched.', 404);
+            throw new \Exception('No route matched.', 404);
         }
     }
 
@@ -128,6 +91,16 @@ class Router
     protected function convertToCamelCase($string)
     {
         return lcfirst($this->convertToStudlyCaps($string));
+    }
+
+    protected function getNamespace()
+    {
+        $namespace = 'App\Controllers\\';
+        if (array_key_exists('namespace', $this->params)) {
+            $namespace .= $this->params['namespace']. '\\';
+        }
+
+        return $namespace;
     }
 
 }

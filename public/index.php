@@ -1,42 +1,34 @@
 <?php
 session_start();
-//if (!isset($_SESSION["logged"]))
-//    header("location: ./register.php");
-require '../App/Controllers/Posts.php';
-require '../Core/Router.php';
+
+spl_autoload_register(function ($class) {
+    $root = dirname(__DIR__); //get the parent directory
+    $file = $root . '/' . str_replace('\\', '/', $class) . '.php';
+    if (is_readable($file)) {
+        require $root. '/' .str_replace('\\', '/', $class) . '.php';
+    }
+});
+
+//PDO::ERRMODE_EXCEPTION
+
+error_reporting(E_ALL);
+set_error_handler('Core\Error::errorHandler');
+set_exception_handler('Core\Error::exceptionHandler');
 
 
-$router = new Router;
-//$router->add('hey/ho', ['controller' => 'Home', 'action' => 'index']);
-//$router->add('yo/yoyo', ['controller' => 'Home_yo', 'action' => 'index_yo']);
+$router = new Core\Router;
+
+
 $router->add('', ['controller' => 'Home', 'action' => 'index']);
 $router->add('posts', ['controller' => 'Posts', 'action' => 'index']);
-$router->add('my/own/url/test/442', ['controller' => 'MyOwnController', 'action' => 'action']);
+$router->add('admin/{controller}/{action}', ['namespace' => 'Admin']);
+//$router->add('log-in', ['controller' => 'Authorization', 'action' => 'logIn']);
+//$router->add('log-out', ['controller' => 'Authorization', 'action' => 'logOut']);
 $router->add('{controller}/{action}');
-//$router->add('admin/{action}/{controller}');
 $router->add('{controller}/{id:\d+}/{action}');
 
-
-/*
-echo '<pre>';
-//echo 'hey';
-//var_dump($router->getRoutes());
-echo htmlspecialchars(print_r($router->getRoutes(), true));
-//echo 'hey2';
-var_dump($_SERVER['QUERY_STRING']);
-echo '</pre>';
-$url = $_SERVER['QUERY_STRING'];
-if ($router->match($url)) {
-    echo '<pre>';
-    var_dump($router->getParams());
-    echo '</pre>';
-
-}
-else {
-    echo "No route found for given URL '$url'";
-}
-*/
 $router->dispatch($_SERVER['QUERY_STRING']);
+
 
 
 
