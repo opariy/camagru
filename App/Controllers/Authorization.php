@@ -186,6 +186,7 @@ class Authorization extends \Core\Controller
             View::render('home.php');
             return false;
         }
+        //hahahahha
     }
 
 
