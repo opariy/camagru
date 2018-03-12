@@ -20,7 +20,7 @@ else
             <input id="name" name="user_name" placeholder="user_name" type="text" required>
             <label>Password :</label>
             <input id="password" name="password" placeholder="**********" type="password" required>
-            <input name="submit" type="submit" value=" Login ">
+            <input name="submit-login" type="submit" value=" Login ">
         </form>
     </div>
     <h2><a href = "/authorization/reset-password">Forgot Password?</a></h2>

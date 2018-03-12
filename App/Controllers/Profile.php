@@ -73,9 +73,7 @@ class Profile extends \Core\Controller
                 var_dump($_SESSION['logged_user']['password']);
                 echo 'input old pass: ';
                 var_dump($old_password);
-
                 if (password_verify($old_password, Model::getUserByName($user_name)['password'])) {
-
 //                if (password_verify($old_password, $_SESSION['logged_user']['password'])) {
                     $new_password = password_hash($new_password, PASSWORD_DEFAULT);
                     if (Model::updatePassword($user_name, $new_password)) {
@@ -83,7 +81,6 @@ class Profile extends \Core\Controller
                         echo 'Your password has been changed';
                         $file = 'profile.php';
                     }
-
                 } else {
                     echo 'Wrong old password';
                 }
@@ -91,10 +88,6 @@ class Profile extends \Core\Controller
             else {
                 $message = 'Passwords don\'t match';
             }
-
-
-
-
             $file = 'profile.php';
         }
 //        View::render('nav_bar_logged.php');
