@@ -10,6 +10,7 @@ use \App\Models\UserModel;
 //db
 //foreign key
 //likes table
+//pages - послденяя
 
 //bonus - delete you comment
 //bonus - ajaxify
@@ -17,7 +18,6 @@ use \App\Models\UserModel;
 //db creation
 //добавить фотки в папку на сервак  создании фотки
 //db table photos likes not Null, but must be 0
-//pages
 
 class Authorization extends \Core\Controller
 {

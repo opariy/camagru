@@ -23,6 +23,8 @@ class Home extends \Core\Controller {
             $photo_path = "/downloads/". $photo['user_id']. "/  ". $photo['name']. ".jpg";
             $picture[] = ['likes' => $photo['likes'], 'path' => $photo_path, 'user_id' => $photo['user_id'], 'photo_id'=> $photo['id']];
         }
+        $args['pages'] = array($page - 2, $page - 1, $page + 0, $page + 1, $page + 2);
+        $args['max_page'] = $max_page;
         $args['picture'] = $picture;
 
         if (isset($_SESSION['s_email'])) {

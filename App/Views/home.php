@@ -105,6 +105,18 @@ for ($i=0; $i<3; $i++) { ?>
 
     <?php } ?>
 
+<ul class="pages">
+    <?php foreach ($pages as $number => $item) : ?>
+        <?php if ($item > 0 && $item <= $max_page) : ?>
+            <?php if ($number == 2) : ?>
+                <li class="middle"><a href="/?page=<?php echo $item; ?>"><?php echo $item; ?></a></li>
+            <?php else : ?>
+                <li><a href="/?page=<?php echo $item; ?>"><?php echo $item; ?></a></li>
+            <?php endif; ?>
+        <?php endif; ?>
+    <?php endforeach; ?>
+</ul>
+
 <script src="js/like.js"></script>
 
 
