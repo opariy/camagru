@@ -36,10 +36,10 @@ abstract class Controller
             $message = 'Passwords don\'t match.';
 
         }
-        elseif (Model::getUserByName($user_name) !== false) {
+        elseif (UserModel::getUserByName($user_name) !== false) {
             $message = 'This login is already taken';
         }
-        elseif (Model::getUserByEmail($email) !== false) {
+        elseif (UserModel::getUserByEmail($email) !== false) {
             $message = 'This email is already taken';
         }
         return $message;

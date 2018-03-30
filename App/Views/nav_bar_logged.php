@@ -19,11 +19,11 @@ else
 </body>
 </html>
 <?php
-if(isset($_SESSION['logged_user']))
-{
-    echo '<pre>';
-    var_dump($_SESSION['logged_user']);
-    echo '</pre>';
-}
+//if(isset($_SESSION['logged_user']))
+//{
+//    echo '<pre>';
+//    var_dump($_SESSION['logged_user']);
+//    echo '</pre>';
+//}
 ?>
 

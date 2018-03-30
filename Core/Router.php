@@ -53,12 +53,11 @@ class Router
 //            echo "<br>" . "looking for controller ". $controller. "<br>";
             if (class_exists($controller)) {
                 $controller_object = new $controller($this->params);
-
                 $action = $this->params['action'];
                 $action = $this->convertToCamelCase($action);
 //                echo "<br>" . "looking for action ". $action. "<br>";
                 if (is_callable([$controller_object, $action])) {
-                    $controller_object->$action();
+                        $controller_object->$action();
                 } else {
                     throw new \Exception("Method $action in controller $controller cannot be called directly - remove the Action suffix to call this method");
                 }
@@ -99,7 +98,6 @@ class Router
         if (array_key_exists('namespace', $this->params)) {
             $namespace .= $this->params['namespace']. '\\';
         }
-
         return $namespace;
     }
 

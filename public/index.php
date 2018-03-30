@@ -20,8 +20,6 @@ $router = new Core\Router;
 
 
 $router->add('', ['controller' => 'Home', 'action' => 'index']);
-$router->add('posts', ['controller' => 'Posts', 'action' => 'index']);
-$router->add('admin/{controller}/{action}', ['namespace' => 'Admin']);
 //$router->add('log-in', ['controller' => 'Authorization', 'action' => 'logIn']);
 //$router->add('log-out', ['controller' => 'Authorization', 'action' => 'logOut']);
 $router->add('{controller}/{action}');

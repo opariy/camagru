@@ -1,7 +1,23 @@
 <?php
 namespace App\Controllers;
 use \Core\View;
-use \Core\Model;
+use \App\Models\UserModel;
+
+//DONE: bonuses - click on photo  - bigger photo
+
+//likes
+//comment notifications test
+//db
+//foreign key
+//likes table
+
+//bonus - delete you comment
+//bonus - ajaxify
+//bonus- like -> notification
+//db creation
+//добавить фотки в папку на сервак  создании фотки
+//db table photos likes not Null, but must be 0
+//pages
 
 class Authorization extends \Core\Controller
 {
@@ -23,10 +39,10 @@ class Authorization extends \Core\Controller
     {
         if (isset($_SESSION['try_log_u_name'])) {
             $user_name = $_SESSION['try_log_u_name'];
-            $email = Model::getUserByName($user_name)['email'];
+            $email = UserModel::getUserByName($user_name)['email'];
         } elseif (isset($_SESSION['s_email'])) {
             $email = $_SESSION['s_email'];
-            $user_name = Model::getUserByEmail($email)['user_name'];
+            $user_name = UserModel::getUserByEmail($email)['user_name'];
         }
 
         $this->sendMail($email, $user_name);
@@ -36,12 +52,12 @@ class Authorization extends \Core\Controller
     {
         if (isset($_POST['submit-login'])) {
             $user_name = htmlspecialchars(strtolower(trim($_POST['user_name'])));
-            if (Model::getUserByName($user_name)) {
+            if (UserModel::getUserByName($user_name)) {
                 $_SESSION['try_log_u_name'] = $user_name;
                 $password = htmlspecialchars($_POST['password']);
-                if (Model::getUserByName($user_name)['activated'] == 1) {
-                    if (password_verify($password, Model::getUserByName($user_name)['password'])) {
-                        $_SESSION['logged_user'] = Model::getUserByName($user_name);
+                if (UserModel::getUserByName($user_name)['activated'] == 1) {
+                    if (password_verify($password, UserModel::getUserByName($user_name)['password'])) {
+                        $_SESSION['logged_user'] = UserModel::getUserByName($user_name);
                         echo 'logged in';
                         header('Location: /');
                     } else {
@@ -62,10 +78,11 @@ class Authorization extends \Core\Controller
     }
 
 
+
     protected function sendMail($email, $user_name)
     {
         $hash = md5(rand(0, 1000));
-        if (Model::updateHash($email, $hash)) {
+        if (UserModel::updateHash($email, $hash)) {
 //            $this->sendVerificationLink($email, $user_name, $hash);
             echo '/authorization/verification?action=registration&email=' . $email . '&hash=' . $hash ;
         }
@@ -86,10 +103,10 @@ class Authorization extends \Core\Controller
 //            $message = true;
             if ($message === true) {
                 $password = password_hash($password, PASSWORD_DEFAULT);
-                Model::addUser($user_name, $email, $password);
+                UserModel::addUser($user_name, $email, $password);
 
                 $hash = md5(rand(0, 1000));
-                if (Model::updateHash($email, $hash)) {
+                if (UserModel::updateHash($email, $hash)) {
 //                    $this->sendVerificationLink($email, $user_name, $hash);
                     echo '/authorization/verification?action=registration&email=' . $email . '&hash=' . $hash ;
                     $_SESSION['s_email'] = $email;
@@ -158,14 +175,14 @@ class Authorization extends \Core\Controller
     {
         if (isset($_GET['action']) && $_GET['action'] == 'registration' && isset($_GET['email']) && isset($_GET['hash'])) {
 
-            $row = Model::getUserByEmail($_GET['email']);
+            $row = UserModel::getUserByEmail($_GET['email']);
             if ($_GET['hash'] == $row['hash']) {
                 if ($row['activated'] == 1) {
                     echo 'You email has already been activated';
                     header('Location: /authorization/log-in');
 //                    View::render('login.php');
                 } else {
-                    if (Model::Activate($_GET['email']))
+                    if (UserModel::Activate($_GET['email']))
                         echo 'activated';
                     header('Location: /authorization/log-in');
 //                    View::render('login.php');
@@ -177,7 +194,7 @@ class Authorization extends \Core\Controller
                 return false;
             }
         } else if (isset($_GET['action']) && $_GET['action'] == 'reinitialization' && isset($_GET['email']) && isset($_GET['hash'])) {
-            $row = Model::getUserByEmail($_GET['email']);
+            $row = UserModel::getUserByEmail($_GET['email']);
             if ($_GET['hash'] == $row['hash']) {
                 View::render('new_password.php');
             }
@@ -201,11 +218,11 @@ class Authorization extends \Core\Controller
     {
         if (isset($_POST['submit'])) {
             $email = htmlspecialchars(strtolower(trim($_POST['email'])));
-            if (Model::getUserByEmail($email)) {
+            if (UserModel::getUserByEmail($email)) {
                 $_SESSION['re_email'] = $email;
                 $hash = md5(rand(0, 1000));
-                if (Model::updateHash($email, $hash)) {
-                    $user_name = Model::getUserByEmail($email)['user_name'];
+                if (UserModel::updateHash($email, $hash)) {
+                    $user_name = UserModel::getUserByEmail($email)['user_name'];
 //                    $this->sendReinitializationLink($email, $user_name, $hash);
                     $url = 'verification?action=reinitialization' . '&email=' . $email . '&hash=' . $hash;
                     echo 'this url ';
@@ -224,7 +241,7 @@ class Authorization extends \Core\Controller
 
             if ($password == $password_repeat) {
                 $password = password_hash($password, PASSWORD_DEFAULT);
-                if (Model::updatePassword(Model::getUserByEmail($_SESSION['re_email'])['user_name'], $password)) {
+                if (UserModel::updatePassword(UserModel::getUserByEmail($_SESSION['re_email'])['user_name'], $password)) {
                     echo 'Your password has been changed';
 //                    header('login.php');
                     View::render('login.php');
@@ -252,10 +269,10 @@ class Authorization extends \Core\Controller
     {
         if (isset($_SESSION['re_email'])) {
             $email = $_SESSION['re_email'];
-            $user_name = Model::getUserByEmail($email)['user_name'];
+            $user_name = UserModel::getUserByEmail($email)['user_name'];
         }
         $hash = md5(rand(0, 1000));
-        if (Model::updateHash($email, $hash)) {
+        if (UserModel::updateHash($email, $hash)) {
 //            $this->sendReinitializationLink($email, $user_name, $hash);
             $url = 'verification?action=reinitialization' . '&email=' . $email . '&hash=' . $hash;
             echo $url;
