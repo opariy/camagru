@@ -20,7 +20,9 @@ class Home extends \Core\Controller {
         $photos = PhotoModel::get9Photos($offset);
         $picture = array();
         foreach ($photos as $photo) {
-            $photo_path = "/downloads/". $photo['user_id']. "/  ". $photo['name']. ".jpg";
+            $photo_path = "/downloads/". $photo['user_id']. "/". $photo['name']. ".jpg";
+//            $photo_path = "/downloads/". $photo['user_id']. "/  ". $photo['name']. ".jpg"; //window
+
             $picture[] = ['likes' => $photo['likes'], 'path' => $photo_path, 'user_id' => $photo['user_id'], 'photo_id'=> $photo['id']];
         }
         $args['pages'] = array($page - 2, $page - 1, $page + 0, $page + 1, $page + 2);
@@ -45,7 +47,9 @@ class Home extends \Core\Controller {
     public function postAction () {
         $photo_id = $this->route_params['id'];
         $photo = PhotoModel::getPhotoById($photo_id);
-        $photo_path = "/downloads/". $photo['user_id'] . "/  ". $photo['name'] . ".jpg";
+//        $photo_path = "/downloads/". $photo['user_id'] . "/   ". $photo['name'] . ".jpg";
+        $photo_path = "/downloads/". $photo['user_id']. "/". $photo['name']. ".jpg";
+
         $picture[] = ['likes' => $photo['likes'], 'path' => $photo_path, 'user_id' => $photo['user_id'], 'photo_id'=> $photo['id']];
 //        echo 'hey';
         $args['picture'] = $picture;

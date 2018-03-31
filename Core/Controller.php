@@ -1,5 +1,8 @@
 <?php
 namespace Core;
+
+use App\Models\UserModel;
+
 abstract class Controller
 {
     protected $route_params = [];

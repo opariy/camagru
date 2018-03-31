@@ -8,15 +8,23 @@ use \App\Models\UserModel;
 //likes
 //comment notifications test
 //db
+
+
 //foreign key
 //likes table
 //pages - послденяя
+
+
+
 
 //bonus - delete you comment
 //bonus - ajaxify
 //bonus- like -> notification
 //db creation
 //добавить фотки в папку на сервак  создании фотки
+
+
+//comment on page 2 -> redirect to / why ??
 //db table photos likes not Null, but must be 0
 
 class Authorization extends \Core\Controller

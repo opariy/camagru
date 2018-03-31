@@ -57,18 +57,25 @@ if (isset($_POST['submit'])) {
     exit();
 }
 for ($i=0; $i<3; $i++) { ?>
+    <h1 id="tmp">
+        Hello, World!
+    </h1>
 <div class="row">
     <?php for ($j = $index; $j < $index + 3; $j++) { ?>
     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
         <div class="img-table"><a href = "home/<?php echo $picture[$j]['photo_id'] ?>/post"><img src="<?php echo $picture[$j]['path']; ?>" ></a></div>
+<!--        --><?php //echo $picture[$j]['path']; ?>
+
 
         likes and stuuff (if logged)
 
         <section class="like_comment_share">
             <div class="like">
-                <a data-photo-id= "<?php echo $picture[$j]['photo_id']; ?>"  onclick ="addLike(this)">Like</a>
+                <a data-photo-id="<?= $picture[$j]['photo_id']; ?>"  onclick ="addLike(this)">Like</a>
             </div>
         </section>
+        <div class="likes" id="like<?php echo $picture[$j]['photo_id']; ?>"><?php echo $picture[$j]['likes']; ?> likes
+        </div>
         <?php
         $comments = CommentsModel::getCommentsForPhoto($picture[$j]['photo_id']);
         if (!empty($comments)) {
@@ -104,7 +111,6 @@ for ($i=0; $i<3; $i++) { ?>
 </div>
 
     <?php } ?>
-
 <ul class="pages">
     <?php foreach ($pages as $number => $item) : ?>
         <?php if ($item > 0 && $item <= $max_page) : ?>
