@@ -3,41 +3,38 @@ namespace App\Controllers;
 use \Core\View;
 use \App\Models\UserModel;
 
-//DONE: bonuses - click on photo  - bigger photo
-
-//likes
-//comment notifications test
-//db
-
-
-//foreign key
-//likes table
-//pages - послденяя
-
-
-
-
-//bonus - delete you comment
-//bonus - ajaxify
+//DONE: bonuses -
+//click on photo  - bigger photo
+//ajaxify
+//bonus see all photos of a selected user (needs to be tested)
 //bonus- like -> notification
-//db creation
-//добавить фотки в папку на сервак  создании фотки
+//bonus delete your comment
 
 
-//comment on page 2 -> redirect to / why ??
-//db table photos likes not Null, but must be 0
+//test everything properly + console at the same time - no warning or log line in any console (any error related to getUserMedia() are tolerated.)
+
+
+//Before submissing
+//db creation (second last page of the pdf) + make sure notifications are included in db creation + clear the db
+//plug in functionas manually in a url
+
+//MARKUP
+//responsive canvas
+//Responsive design
+///  compatible with Firefox (>= 41) and Chrome (>= 46).
+///display correctly on mobile devices and have an adapted layout on small resolutions.
+
+
+
+//failed test cases"
+// wrong sign up credentils = refresh page = they are displayed
+
 
 class Authorization extends \Core\Controller
 {
 
-
     public function logOutAction()
     {
-
-        echo 'we are here after logout';
-        echo '<pre>';
-        var_dump($_SESSION);
-        echo '<pre>';
         if (session_destroy()) {
             header("Location: /");
         }
@@ -45,19 +42,22 @@ class Authorization extends \Core\Controller
 
     public function resendMailAction()
     {
-        if (isset($_SESSION['try_log_u_name'])) {
-            $user_name = $_SESSION['try_log_u_name'];
-            $email = UserModel::getUserByName($user_name)['email'];
-        } elseif (isset($_SESSION['s_email'])) {
-            $email = $_SESSION['s_email'];
-            $user_name = UserModel::getUserByEmail($email)['user_name'];
-        }
+            if (isset($_SESSION['try_log_u_name'])) {
+                $user_name = $_SESSION['try_log_u_name'];
+                $email = UserModel::getUserByName($user_name)['email'];
+            } elseif (isset($_SESSION['s_email'])) {
+                $email = $_SESSION['s_email'];
+                $user_name = UserModel::getUserByEmail($email)['user_name'];
+            }
 
-        $this->sendMail($email, $user_name);
+            $this->sendMail($email, $user_name);
+
     }
 
     public function logInAction()
     {
+//        unset($args);
+        $message = "";
         if (isset($_POST['submit-login'])) {
             $user_name = htmlspecialchars(strtolower(trim($_POST['user_name'])));
             if (UserModel::getUserByName($user_name)) {
@@ -66,22 +66,25 @@ class Authorization extends \Core\Controller
                 if (UserModel::getUserByName($user_name)['activated'] == 1) {
                     if (password_verify($password, UserModel::getUserByName($user_name)['password'])) {
                         $_SESSION['logged_user'] = UserModel::getUserByName($user_name);
-                        echo 'logged in';
                         header('Location: /');
                     } else {
-                        echo 'Wrong password';
-                        View::render('login.php');
+                        $message = 'Wrong password';
+                        $args['message'] = $message;
+                        View::render('login.php', $args);
                     }
                 } else {
                     View::render('email_sent.php');
                 }
             } else {
-                echo 'No account found for this user name. You can register a new one though.';
-                View::render('login.php');
+                $message =  'No account found for this user name. You can register a new one though.';
+                $args['message'] = $message;
+                View::render('login.php', $args);
             }
+            unset($_POST['submit-login']);
         }
         else {
-            View::render('login.php');
+            $args['message'] = $message;
+            View::render('login.php', $args);
         }
     }
 
@@ -91,8 +94,8 @@ class Authorization extends \Core\Controller
     {
         $hash = md5(rand(0, 1000));
         if (UserModel::updateHash($email, $hash)) {
-//            $this->sendVerificationLink($email, $user_name, $hash);
-            echo '/authorization/verification?action=registration&email=' . $email . '&hash=' . $hash ;
+            $this->sendVerificationLink($email, $user_name, $hash);
+//            echo '/authorization/verification?action=registration&email=' . $email . '&hash=' . $hash ;
         }
         View::render('email_sent.php');
         View::render('login.php');
@@ -101,6 +104,8 @@ class Authorization extends \Core\Controller
     public function signUpAction()
     {
         $file = 'signup.php';
+        $message = true;
+
         if (isset($_POST['submit'])) {
 
             $user_name = htmlspecialchars(strtolower(trim($_POST['user_name'])));
@@ -108,26 +113,23 @@ class Authorization extends \Core\Controller
             $password = htmlspecialchars($_POST['psw']);
             $password_repeat = htmlspecialchars($_POST['psw-repeat']);
             $message = $this->validateCredentials($user_name, $email, $password, $password_repeat);
-//            $message = true;
+
             if ($message === true) {
                 $password = password_hash($password, PASSWORD_DEFAULT);
                 UserModel::addUser($user_name, $email, $password);
 
                 $hash = md5(rand(0, 1000));
                 if (UserModel::updateHash($email, $hash)) {
-//                    $this->sendVerificationLink($email, $user_name, $hash);
-                    echo '/authorization/verification?action=registration&email=' . $email . '&hash=' . $hash ;
+                    $this->sendVerificationLink($email, $user_name, $hash);
+//                    echo '/authorization/verification?action=registration&email=' . $email . '&hash=' . $hash ;
                     $_SESSION['s_email'] = $email;
                     View::render('email_sent.php');
                     $file = 'login.php';
                 }
-            } else {
-                echo $message;
-//                $args['message'] = $message;
             }
-
         }
-        View::render($file);
+        $args['message'] = $message;
+        View::render($file, $args);
     }
 
 
@@ -181,41 +183,45 @@ class Authorization extends \Core\Controller
 
     public function verification()
     {
+        $message = "";
+
         if (isset($_GET['action']) && $_GET['action'] == 'registration' && isset($_GET['email']) && isset($_GET['hash'])) {
 
             $row = UserModel::getUserByEmail($_GET['email']);
             if ($_GET['hash'] == $row['hash']) {
                 if ($row['activated'] == 1) {
-                    echo 'You email has already been activated';
-                    header('Location: /authorization/log-in');
-//                    View::render('login.php');
+                    $message = 'You email has already been activated';
+                    $args['message'] = $message;
+                    View::render('login.php', $args);
                 } else {
                     if (UserModel::Activate($_GET['email']))
-                        echo 'activated';
                     header('Location: /authorization/log-in');
-//                    View::render('login.php');
                 }
             } else {
-                echo 'Sorry, wrong email-link combination.';
-                header('Location: /');
-//                View::render('home.php');
+                $message = 'Sorry, wrong email-link combination.';
+                $args['message'] = $message;
+                View::render('login.php', $args);
                 return false;
             }
         } else if (isset($_GET['action']) && $_GET['action'] == 'reinitialization' && isset($_GET['email']) && isset($_GET['hash'])) {
+
             $row = UserModel::getUserByEmail($_GET['email']);
             if ($_GET['hash'] == $row['hash']) {
-                View::render('new_password.php');
+
+                $args['email'] = $_GET['email'];
+                View::render('new_password.php', $args);
             }
             else {
-                echo 'Sorry, wrong email-link combination.';
-                View::render('enter_email.php');
+                $message = 'Sorry, wrong email-link combination.';
+                $args['message'] = $message;
+                View::render('enter_email.php', $args);
                 return false;
             }
         }
         else {
-            echo 'Sorry, wrong link.';
-//            header('Location: /authorization/log-in');
-            View::render('home.php');
+            $message = 'Sorry, wrong link.';
+            $args['message'] = $message;
+            View::render('404.php', $args);
 
             return false;
         }
@@ -224,50 +230,65 @@ class Authorization extends \Core\Controller
 
     public function resetPasswordAction()
     {
+        $message = "";
+
         if (isset($_POST['submit'])) {
+
             $email = htmlspecialchars(strtolower(trim($_POST['email'])));
             if (UserModel::getUserByEmail($email)) {
                 $_SESSION['re_email'] = $email;
                 $hash = md5(rand(0, 1000));
                 if (UserModel::updateHash($email, $hash)) {
                     $user_name = UserModel::getUserByEmail($email)['user_name'];
-//                    $this->sendReinitializationLink($email, $user_name, $hash);
-                    $url = 'verification?action=reinitialization' . '&email=' . $email . '&hash=' . $hash;
-                    echo 'this url ';
-                    var_dump($url);
+                    $this->sendReinitializationLink($email, $user_name, $hash);
+//                    $url = 'verification?action=reinitialization' . '&email=' . $email . '&hash=' . $hash;
+//                    echo 'this url ';
+//                    var_dump($url);
                     View::render('email_sent_reset_pass.php');
                 }
             } else {
-                echo 'No account found for this user name. You can register a new one though.';
-//                header('Location: /authorization/sign-up');
-                View::render('signup.php');
+                $message =  'No account found for this user name. You can register a new one though.';
+                $args['message'] = $message;
+                View::render('signup.php', $args);
             }
         }
         elseif (isset($_POST['submit1'])) {
+
             $password = htmlspecialchars($_POST['psw']);
             $password_repeat = htmlspecialchars($_POST['psw-repeat']);
 
             if ($password == $password_repeat) {
                 $password = password_hash($password, PASSWORD_DEFAULT);
-                if (UserModel::updatePassword(UserModel::getUserByEmail($_SESSION['re_email'])['user_name'], $password)) {
-                    echo 'Your password has been changed';
-//                    header('login.php');
-                    View::render('login.php');
+
+                if (isset($_SESSION['re_email'])) {
+                    $email = $_SESSION['re_email'];
                 }
                 else {
-                    echo 'an error occured. password wasn;t updated';
-//                    header('Location: /authorization/log-in');
-                    View::render('login.php');
+                    $email = $_POST['email'];
+                }
+
+
+                if (UserModel::updatePassword(UserModel::getUserByEmail($email)['user_name'], $password)) {
+                    $message = 'Your password has been changed';
+                    $args['message'] = $message;
+                    View::render('login.php', $args);
+                }
+                else {
+                    $message = 'an error occured. password wasn\'t updated';
+                    $args['message'] = $message;
+                    View::render('login.php', $args);
                     }
                 }
                 else {
                     $message = 'Passwords don\'t match.';
-                    View::render('change_passwords.php');
-                    echo $message;
+                    $args['message'] = $message;
+                    View::render('change_password.php', $args);
+//                    echo $message;
                 }
             }
         else {
-            View::render('enter_email.php');
+            $args['message'] = $message;
+            View::render('enter_email.php', $args);
         }
     }
 
@@ -278,13 +299,14 @@ class Authorization extends \Core\Controller
         if (isset($_SESSION['re_email'])) {
             $email = $_SESSION['re_email'];
             $user_name = UserModel::getUserByEmail($email)['user_name'];
+            $hash = md5(rand(0, 1000));
+            if (UserModel::updateHash($email, $hash)) {
+                $this->sendReinitializationLink($email, $user_name, $hash);
+            }
+            View::render('email_sent_reset_pass.php');
         }
-        $hash = md5(rand(0, 1000));
-        if (UserModel::updateHash($email, $hash)) {
-//            $this->sendReinitializationLink($email, $user_name, $hash);
-            $url = 'verification?action=reinitialization' . '&email=' . $email . '&hash=' . $hash;
-            echo $url;
+        else {
+            header("Location: /authorization/reset-password");
         }
-        View::render('email_sent_reset_pass.php');
     }
 }

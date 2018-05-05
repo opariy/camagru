@@ -1,13 +1,15 @@
 <?php
 namespace App\Controllers;
 
-use App\Models\CommentsModel;
 use App\Models\PhotoModel;
+use App\Models\UserModel;
 use \Core\View;
 
 class Home extends \Core\Controller {
 
     public function indexAction() {
+
+        $args['message'] = "";
 
         $allPhotos = PhotoModel::countAllPhotos();
         $max_page = ceil($allPhotos / 9);
@@ -20,12 +22,11 @@ class Home extends \Core\Controller {
         $photos = PhotoModel::get9Photos($offset);
         $picture = array();
         foreach ($photos as $photo) {
-            $photo_path = "/downloads/". $photo['user_id']. "/". $photo['name']. ".jpg";
-//            $photo_path = "/downloads/". $photo['user_id']. "/  ". $photo['name']. ".jpg"; //window
-
-            $picture[] = ['likes' => $photo['likes'], 'path' => $photo_path, 'user_id' => $photo['user_id'], 'photo_id'=> $photo['id']];
+            $photo_path = "/downloads/". $photo['user_id']. "/". $photo['name'];
+            $author_user_name = UserModel::getUserById($photo['user_id'])['user_name'];
+            $picture[] = ['likes' => $photo['likes'], 'path' => $photo_path, 'user_id' => $photo['user_id'], 'photo_id'=> $photo['id'], 'author_user_name' => $author_user_name];
         }
-        $args['pages'] = array($page - 2, $page - 1, $page + 0, $page + 1, $page + 2);
+        $args['pages'] = array($page - 2, $page - 1, $page, $page + 1, $page + 2);
         $args['max_page'] = $max_page;
         $args['picture'] = $picture;
 
@@ -38,32 +39,30 @@ class Home extends \Core\Controller {
         if (isset($_SESSION['try_log_u_name'])) {
             unset ($_SESSION['try_log_u_name']);
         }
-//        View::render('nav_bar_not_logged.php');
-//        View::render('home.php');
         View::render('home.php', $args);
     }
 
 
     public function postAction () {
+
         $photo_id = $this->route_params['id'];
         $photo = PhotoModel::getPhotoById($photo_id);
-//        $photo_path = "/downloads/". $photo['user_id'] . "/   ". $photo['name'] . ".jpg";
-        $photo_path = "/downloads/". $photo['user_id']. "/". $photo['name']. ".jpg";
-
-        $picture[] = ['likes' => $photo['likes'], 'path' => $photo_path, 'user_id' => $photo['user_id'], 'photo_id'=> $photo['id']];
-//        echo 'hey';
-        $args['picture'] = $picture;
-        View::render('post.php', $args);
-
+        if (!$photo) {
+            header("Location: /");
+        }
+        else {
+            $photo_path = "/downloads/". $photo['user_id']. "/". $photo['name'];
+            $author_user_name = UserModel::getUserById($photo['user_id'])['user_name'];
+            $picture[] = ['likes' => $photo['likes'], 'path' => $photo_path, 'user_id' => $photo['user_id'], 'photo_id'=> $photo['id'], 'author_user_name' => $author_user_name];
+            $args['picture'] = $picture;
+            View::render('post.php', $args);
+        }
     }
 
     protected function before () {
 
-//        View::render('Home/index.php', ['name' => 'Sasha', 'colours' => ['red', 'green', 'blue']]);
-//        echo "=before= ";
     }
 
     protected function after () {
-//        echo " =after= ";
     }
 }

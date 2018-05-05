@@ -11,43 +11,48 @@ else
 ?>
 <!DOCTYPE html>
 <html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
 <body>
-<!--<form action='change-password.php' method='post' id="register-form">-->
-<!--    --><?php //echo $message; ?>
-<!--    <input class="password-field" type='password' name='oldpw' value='--><?php //echo $user_name; ?><!--' placeholder="Current Password"><br />-->
-<!--    <input  class="password-field" type='password' name='newpw' placeholder="New Password"><br />-->
-<!--    <input class="password-field" type='password' name='conpw' placeholder="Confrim Password">-->
-<!--    <input class="button" type='submit' name='change' value='Change' />-->
-
-
+<div class="container">
+    <?php if (is_string($message)) { echo $message;}  ?>
 
     <div id="profile">
         <h2>edit your profile</h2>
         <form action="/profile/index" method="post">
+            <div>i want to receive  email notifications:
+<!--                <input type="radio" name="radio"  id="radioButton">-->
+<!--                <input type="radio" value="1">-->
+<!--                <input type="radio" checked="checked">-->
+                <input id="checkBox" name="notify" <?php if ($notify) { echo 'checked';} ?> type="checkbox">
+
+            </div>
+
             <label>user name :</label>
+
             <input id="new_user_name" name="new_user_name" type="text" value='<?php echo $_SESSION['logged_user']['user_name']; ?>' >
+
             <label>email :</label>
             <input id="new_email" name="new_email"  type="email" value='<?php echo $_SESSION['logged_user']['email']; ?>' >
 <!--            <label>old password :</label>-->
 <!--            <input id="password" name="password"  type="password" >-->
             <input name="submit" type="submit" value=" save ">
-            <!--            $username=$_POST['username'];-->
         </form>
+        <h2><a href = "/profile/change-password">change password</a></h2>
     </div>
-    <h2><a href = "/profile/change-password">Change password</a></h2>
+</div>
+
 
 
 </form>
 
 </body>
-</html>
 <?php
-//if(isset($_SESSION['logged_user']))
-//{
-//    echo '<pre>';
-//    var_dump($_SESSION['logged_user']);
-//    echo '</pre>';
-//}
+require_once ('footer.php');
 ?>
+</html>
 
 

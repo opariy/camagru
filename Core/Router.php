@@ -50,22 +50,23 @@ class Router
             $controller = $this->params['controller'];
             $controller = $this->convertToStudlyCaps($controller);
             $controller = $this->getNamespace(). $controller;
-//            echo "<br>" . "looking for controller ". $controller. "<br>";
             if (class_exists($controller)) {
                 $controller_object = new $controller($this->params);
                 $action = $this->params['action'];
                 $action = $this->convertToCamelCase($action);
-//                echo "<br>" . "looking for action ". $action. "<br>";
                 if (is_callable([$controller_object, $action])) {
                         $controller_object->$action();
                 } else {
-                    throw new \Exception("Method $action in controller $controller cannot be called directly - remove the Action suffix to call this method");
+                    View::render('404.php');
+//                    throw new \Exception("Method $action in controller $controller cannot be called directly - remove the Action suffix to call this method");
                 }
             } else {
-                throw new \Exception("Controller class $controller not found");
+                View::render('404.php');
+//                throw new \Exception("Controller class $controller not found");
             }
         } else {
-            throw new \Exception('No route matched.', 404);
+            View::render('404.php');
+//            throw new \Exception('No route matched.', 404);
         }
     }
 

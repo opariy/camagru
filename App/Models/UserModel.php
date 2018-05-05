@@ -1,8 +1,6 @@
 <?php
 namespace App\Models;
 
-//use \Core\Model;
-
 class UserModel extends \Core\Model
 {
     public static function addUser($user_name, $email, $password)
@@ -75,6 +73,7 @@ class UserModel extends \Core\Model
         return false;
     }
 
+
     public static function updatePassword($user_name, $password)
     {
         try {
@@ -83,6 +82,25 @@ class UserModel extends \Core\Model
             $stmt = $db->prepare($sql);
             $stmt->bindParam(':user_name', $user_name);
             $stmt->bindParam(':password', $password);
+            if ($stmt->execute()) {
+                return true;
+            }
+
+        } catch (\PDOException $e) {
+            echo $e->getMessage();
+            $e->getMessage();
+        }
+        return false;
+    }
+
+    public static function updateNotiications($user_name, $value)
+    {
+        try {
+            $db = static::getDB();
+            $sql = "UPDATE users SET notifications = :value WHERE user_name = :user_name";
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam(':user_name', $user_name);
+            $stmt->bindParam(':value', $value);
             if ($stmt->execute()) {
                 return true;
             }

@@ -21,6 +21,23 @@ class CommentsModel extends \Core\Model
         return ($row);
     }
 
+    public static function deleteComment($id)
+    {
+        try {
+            $db = static::getDB();
+            $sql = '
+			DELETE FROM `comments`
+			WHERE `id` = :id;
+			';
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+        } catch (\PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+
+
     public static function addComment($photo_id, $text)
     {
         $row = false;
@@ -39,21 +56,4 @@ class CommentsModel extends \Core\Model
         }
         return ($row);
     }
-
-
-//    public static function get9Photos($offset)
-//    {
-//        $row = false;
-//        try {
-//            $db = static::getDB();
-////            echo $offset;
-//            $sql = "SELECT * FROM `photos` ORDER BY `id` DESC LIMIT 9 OFFSET $offset;";
-//            $stmt = $db->prepare($sql);
-//            $stmt->execute();
-//            $row = $stmt->fetchAll();
-//        } catch (\PDOException $e) {
-//            $e->getMessage();
-//        }
-//        return ($row);
-//    }
 }

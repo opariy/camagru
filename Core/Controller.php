@@ -21,8 +21,8 @@ abstract class Controller
             }
         }
         else {
-//            echo "Method $method not found in controller".get_class($this);
-            throw new \Exception("Method $method not found in controller" . get_class($this));
+            View::render('404.php');
+//            throw new \Exception("Method $method not found in controller" . get_class($this));
         }
 
     }

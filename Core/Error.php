@@ -29,7 +29,6 @@ class Error
 
         }
         else {
-//            View::render("$code.html");
             if ($code == 404) {
                 echo "<h1>Page not found</h1>";
             }

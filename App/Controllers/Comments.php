@@ -12,12 +12,8 @@ class Comments extends \Core\Controller
     {
         $commenter_name = $_SESSION['logged_user']['user_name'];
         $user_id = PhotoModel::getPhotoById($photo_id)['user_id'];
-//        var_dump($user_id);
-        $user_name = PhotoModel::getPhotoById($photo_id)['user_id'];
+        $user_name = UserModel::getUserById($user_id)['user_name'];
         $email = UserModel::getUserById($user_id)['email'];
-
-        echo "commenter " . $commenter_name . "user name " . $user_name . "email " . $email;
-        //add right link
         $message = "
 				<html lang='en'>
 				<head>
@@ -25,8 +21,7 @@ class Comments extends \Core\Controller
 				</head>
 				<body>
 				<p>Hello, <b>@" . $user_name . "</b>!</p>
-				<p>Your <a href='" . $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . "' title='camagru'>photo</a> has received the following comment " . $comment . " from ". $commenter_name . "</p>
-				<hr>
+				<p>Your <a href='" . $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . '/home/'. $photo_id. '/post'. "' title='camagru'>photo</a> has received the following comment <i>\"" . $comment . "\"</i> from <b>@". $commenter_name . "</p>
 				</body>
 				</html>
 			";

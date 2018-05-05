@@ -11,20 +11,35 @@ else
 ?>
 <!DOCTYPE html>
 <html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<style>
+    #nav {
+        /*background-color: lightgrey;*/
+        /*position: relative;*/
+        height: 150px;
+    }
+</style>
 <body>
-<h2><a href = "/">Home sweet home</a></h2>
-<h2><a href = "/Authorization/log-in">Log In</a></h2>
-<h2><a href = "/Authorization/sign-up">Sign up</a></h2>
+<div class="container">
+    <div class="row" id="nav">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><h3><a href = "/">home</a></h3></div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="text-align: right;">
+            <h3><a href = "/Authorization/log-in">log in</a></h3>
+            <h3><a href = "/Authorization/sign-up">sign up</a></h3>
+        </div>
+    </div>
+</div>
 </body>
-</html>
+
+
 <?php
-//if(isset($_SESSION['logged_user']))
-//{
-//    echo '<pre>';
-//    var_dump($_SESSION['logged_user']);
-//    echo '</pre>';
-//}
+require_once ('footer.php');
 ?>
+</html>
 
 
 
