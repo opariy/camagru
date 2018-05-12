@@ -25,11 +25,18 @@ else
         <div id="login">
             <h3>Login Form</h3>
             <form action="/authorization/log-in" method="post">
-                <label>User Name :</label>
-                <input id="name" name="user_name" placeholder="user_name" type="text" required>
-                <label>Password :</label>
-                <input id="password" name="password" placeholder="**********" type="password" required>
-                <input name="submit-login" type="submit" value=" Login ">
+                <div>
+                    <label>User Name :</label>
+                    <input id="name" name="user_name" placeholder="user_name" type="text" required>
+                </div>
+                <div>
+                    <label>Password :</label>
+                    <input id="password" name="password" placeholder="**********" type="password" required>
+                </div>
+                <div>
+                    <input name="submit-login" type="submit" value=" Login ">
+                </div>
+
             </form>
         </div>
         <h3><a href = "/authorization/reset-password">Forgot Password?</a></h3>
