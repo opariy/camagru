@@ -14,6 +14,11 @@
         /*background-color: wheat;*/
         /*padding: 20px 0;*/
         /*height: 183px;*/
+
+
+        background: #fff;
+        z-index: 100;
+        text-align: center;
     }
 </style>
 <footer class="footer" >

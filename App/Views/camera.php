@@ -93,14 +93,14 @@ else
     </style>
 </head>
 <body>
-<div class="container-fluid" >
+    <div class="container-fluid" >
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-2">
             <div class="row beard_1 stickers" onclick="beard_1()"></div>
             <div class="row bats stickers" onclick="bats()"></div>
             <div class="row winnie stickers" onclick="winnie()"></div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 relative_container">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5 relative_container">
             <video id="video" autoplay width="640" height="400">VIDEO</video>
             <div id="div_frame" ></div>
             <div >
@@ -115,7 +115,7 @@ else
                     </form>
             </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5" >
             <canvas id="canvas" width="640" height="400">CANVAS</canvas>
             <div id="div_frame_result"></div>
         </div>
@@ -126,7 +126,7 @@ else
         $photos = PhotoModel::getAllUserPhotos($_SESSION['logged_user']['user_id']);
         $count = PhotoModel::countAllUserPhotos($_SESSION['logged_user']['user_id']);
         for ($i=0; $i<$count; $i++) { ?>
-            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-2">
                 <div class="img-table"><a href = "/../home/<?php echo $photos[$i]['id'] ?>/post"><img src="<?php echo '/downloads/'. $photos[$i]['user_id']. '/'. $photos[$i]['name']; ?>" ></a></div>
             </div>
         <?php } ?>

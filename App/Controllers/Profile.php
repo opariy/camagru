@@ -21,8 +21,7 @@ class Profile extends \Core\Controller
             if (isset($_POST['submit'])) {
                 if (isset($_POST['notify'])) {
                     UserModel::updateNotiications($user_name, 1);
-                }
-                else {
+                } else {
                     UserModel::updateNotiications($user_name, 0);
                 }
                 $new_user_name = htmlspecialchars(strtolower(trim($_POST['new_user_name'])));
@@ -33,6 +32,7 @@ class Profile extends \Core\Controller
                     if (UserModel::getUserByEmail($new_email) !== false) {
                         $message = 'This email is already taken';
                     }
+
                 }
                 if ($_SESSION['logged_user']['user_name'] != $new_user_name) {
 
@@ -51,10 +51,8 @@ class Profile extends \Core\Controller
                 $args['message'] = $message;
                 $file = 'profile.php';
             }
-            $args['notify'] = UserModel::getUserByName($user_name)['notifications'];
+            $args['notify'] = UserModel::getUserByName($_SESSION['logged_user']['user_name'])['notifications'];
             $args['message'] = $message;
-//            var_dump($args);
-
             View::render($file, $args);
         }
     }
@@ -85,7 +83,7 @@ class Profile extends \Core\Controller
                             $file = 'profile.php';
                         }
                     } else {
-                        $message =  'Wrong old password';
+                        $message = 'Wrong old password';
                     }
                 } else {
                     $message = 'Passwords don\'t match';
@@ -101,8 +99,14 @@ class Profile extends \Core\Controller
 
     public function userAction()
     {
-        $user_id = $this->route_params['id'];
-        $data = array('user_id' => $user_id);
-        View::render('UserPhotos.php', $data);
+
+        if (array_key_exists('id', $this->route_params)) {
+
+            $user_id = $this->route_params['id'];
+            $data = array('user_id' => $user_id);
+            View::render('UserPhotos.php', $data);
+        } else {
+            header("Location: /");
+        }
     }
 }

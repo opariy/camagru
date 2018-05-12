@@ -1,6 +1,10 @@
 <?php
 use \App\Models\CommentsModel;
 use \App\Controllers\Comments;
+use \App\Models\LikesModel;
+use \App\Models\UserModel;
+
+
 
 if(!isset($_SESSION['logged_user']) || empty($_SESSION['logged_user'])) {
     require_once ('nav_bar_not_logged.php');
@@ -30,18 +34,24 @@ if (isset($_POST['submit'])) {
     exit();
 }
 ?>
+<div class="container">
+    <h3 id="user_photo">
+        <a href = '/profile/<?php echo $picture[0]['user_id']; ?>/user'><?php echo UserModel::getUserById($picture[0]['user_id'])['user_name']; ?></a>'s photo
+    </h3>
         <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="margin: 0 auto;">
                 <div class="img-table"><img src="<?php echo $picture[0]['path']; ?>"></div>
                 <?php
                 if (isset($_SESSION['logged_user'])) {
+                    if (LikesModel::findPair($_SESSION['logged_user']['user_id'], $picture[0]['photo_id'])) {
+                        $liked_class = 'class="liked"';
+                    }   else {
+                        $liked_class = 'class="not_liked"';
+                    }
                     ?>
-
-                    <section class="like_comment_share">
-                        <div class="like">
+                        <div <?= $liked_class; ?></div>
                             <a data-photo-id="<?= $picture[0]['photo_id']; ?>"  onclick ="addLike(this)">Like</a>
                         </div>
-                    </section>
 
                     <?php
                     if ($_SESSION['logged_user']['user_id'] == $picture[0]['user_id']) {
@@ -56,7 +66,6 @@ if (isset($_POST['submit'])) {
                 <div class="likes" id="like<?php echo $picture[0]['photo_id']; ?>"><?php if ($picture[0]['likes'] == 1) {echo $picture[0]['likes']. ' like';} else {echo $picture[0]['likes']. ' likes';}?>
 
 
-<!--                    <div class="likes" id="like--><?php //echo $picture[0]['photo_id']; ?><!--">--><?php //echo $picture[0]['likes']; ?><!-- likes-->
                 </div>
 
 
@@ -66,37 +75,68 @@ if (isset($_POST['submit'])) {
                     ?>
                     <div class="comment"></div>
                     <?php            for ($count = 0; $count < count($comments); $count++) { ?>
+                    <div class="textarea">
                         <div><b>@ <?php  echo $comments[$count]['user_name'] ?> </b>: <?php echo $comments[$count]['body'] ?> </div>
                         <div>
                             <a class="delete_comment" id="comment<?php echo $comments[$count]['id']; ?>" data-delete-comment-id="<?= $comments[$count]['id']; ?>"  onclick ="deleteComment(this)">Delete Comment</a>
                         </div>
+                    </div>
                     <?php }
                 }
 
                 if (isset($_SESSION['logged_user'])) {
                     ?>
-                    <div><form action="/home/<?php echo $picture[0]['photo_id'] ?>/post" method="post">
-                            <!--                <input placeholder="add your comment" name="comment" type="text" maxlength="300">-->
+                    <div class="post-form">
+                        <form action="/home/<?php echo $picture[0]['photo_id'] ?>/post" method="post">
                             <textarea placeholder="add your comment" required name="comment"  maxlength="300"></textarea>
                             <input type="hidden" name="photo_id" value="<?php echo $picture[0]['photo_id']; ?>">
                             <input name="submit" type="submit" value=" Send ">
                         </form>
                     </div>
                 <?php } ?>
-            </div>
-        </div>
+    </div>
 
 <style>
+    body {
+        margin-bottom: 30px;
+    }
+
+    #user_photo {
+        /*color: gray;*/
+        text-align: center;
+    }
+
+    .textarea {
+        overflow-wrap: break-word;
+        /*width: 100px*/
+        /*white-space: nowrap*/
+        /*overflow: hidden*/
+        /*text-overflow: ellipsis*/
+    }
+
+
+    .thumbnail {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .img-table {
+        margin: 10px 0;
+        /*position: center;*/
+    }
+
     .img-table img {
         /*position: relative;*/
         overflow: hidden;
         /*width:30%;*/
-        width:400px;
+        width:100%;
 
         /*height:30%;*/
         height:auto;
         display:inline;
-        margin: 10px 1.5%; /* spacing: 20px vertically, 5% horizontally */
+        /*margin: 10px 1.5%; !* spacing: 20px vertically, 5% horizontally *!*/
         /*-webkit-transform: translate(-50%,-50%);*/
         /*-ms-transform: translate(-50%,-50%);*/
         /*transform: translate(-50%,-50%);*/
@@ -104,6 +144,77 @@ if (isset($_POST['submit'])) {
         /*overflow: hidden;*/
         /*width: 30%;*/
         /*height: 30%;*/
+
+
+    }
+    .img-table > a {
+        max-width: 100%;
+        /*position: center;*/
+    }
+
+    .post-form > form {
+        display: flex;
+        margin: 10px 0;
+        align-content: stretch;
+    }
+
+    .liked > a {
+
+
+        /*display: flex;*/
+        /*flex-direction: row;*/
+        /*margin-top: 4px;*/
+
+        background-image: url("/img/icons.png");
+        background-position-x: -388px;
+        background-position-y: -76px;
+
+        /*-388px -76px*/
+
+        background-repeat: no-repeat;
+        background-size: 435px 406px;
+        /*vertical-align: baseline;*/
+        cursor: pointer;
+
+        height: 24px;
+        width: 24px;
+        /*padding: 8px;*/
+        /*padding-left: 43px;*/
+
+        overflow: hidden;
+        text-indent: 110%;
+        display: inline-block;
+        float: left;
+
+    }
+
+    .not_liked > a {
+
+
+        /*display: flex;*/
+        /*flex-direction: row;*/
+        /*margin-top: 4px;*/
+
+        background-image: url("/img/icons.png");
+        background-position-x: -388px;
+        background-position-y: -201px;
+
+        /*-388px -76px*/
+
+        background-repeat: no-repeat;
+        background-size: 435px 406px;
+        /*vertical-align: baseline;*/
+        cursor: pointer;
+
+        height: 24px;
+        width: 24px;
+        /*padding: 8px;*/
+        /*padding-left: 43px;*/
+
+        overflow: hidden;
+        text-indent: 110%;
+        display: inline-block;
+        float: left;
 
     }
 
@@ -189,6 +300,13 @@ if (isset($_POST['submit'])) {
         /*margin-left: 50px;*/
     }
 
+
+
+    .pagination {
+        width: auto;
+        max-width: 400px;
+        margin: 20px auto;
+    }
 
 </style>
 </body>

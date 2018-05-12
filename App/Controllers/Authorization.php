@@ -11,23 +11,11 @@ use \App\Models\UserModel;
 //bonus delete your comment
 
 
-//test everything properly + console at the same time - no warning or log line in any console (any error related to getUserMedia() are tolerated.)
-
-
-//Before submissing
-//db creation (second last page of the pdf) + make sure notifications are included in db creation + clear the db
-//plug in functionas manually in a url
-
 //MARKUP
 //responsive canvas
 //Responsive design
-///  compatible with Firefox (>= 41) and Chrome (>= 46).
 ///display correctly on mobile devices and have an adapted layout on small resolutions.
 
-
-
-//failed test cases"
-// wrong sign up credentils = refresh page = they are displayed
 
 
 class Authorization extends \Core\Controller
@@ -42,6 +30,7 @@ class Authorization extends \Core\Controller
 
     public function resendMailAction()
     {
+        if (isset($_SESSION['try_log_u_name']) || isset($_SESSION['s_email'])) {
             if (isset($_SESSION['try_log_u_name'])) {
                 $user_name = $_SESSION['try_log_u_name'];
                 $email = UserModel::getUserByName($user_name)['email'];
@@ -49,14 +38,14 @@ class Authorization extends \Core\Controller
                 $email = $_SESSION['s_email'];
                 $user_name = UserModel::getUserByEmail($email)['user_name'];
             }
-
             $this->sendMail($email, $user_name);
-
+        } else {
+            header("Location: /");
+        }
     }
 
     public function logInAction()
     {
-//        unset($args);
         $message = "";
         if (isset($_POST['submit-login'])) {
             $user_name = htmlspecialchars(strtolower(trim($_POST['user_name'])));
@@ -241,9 +230,6 @@ class Authorization extends \Core\Controller
                 if (UserModel::updateHash($email, $hash)) {
                     $user_name = UserModel::getUserByEmail($email)['user_name'];
                     $this->sendReinitializationLink($email, $user_name, $hash);
-//                    $url = 'verification?action=reinitialization' . '&email=' . $email . '&hash=' . $hash;
-//                    echo 'this url ';
-//                    var_dump($url);
                     View::render('email_sent_reset_pass.php');
                 }
             } else {
@@ -283,7 +269,6 @@ class Authorization extends \Core\Controller
                     $message = 'Passwords don\'t match.';
                     $args['message'] = $message;
                     View::render('change_password.php', $args);
-//                    echo $message;
                 }
             }
         else {

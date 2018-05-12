@@ -27,7 +27,7 @@ function addLike(elem) {
         }
     };
 
-    console.log(elem);
+    // console.log(elem);
 
     xmlhttp.send("photo_id=" + elem.dataset.photoId);
     var data = getComputedStyle(elem);

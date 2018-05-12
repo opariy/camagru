@@ -27,9 +27,9 @@ else
 
 <div class="container">
     <div class="row" id="nav">
-        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-4"><h3><a href = "/">home</a></h3></div>
-        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-4"><h3><a href = "/camera/add-photo">camera</a></h3></div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4" style="text-align: right;">
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="text-align: center;"><h3><a href = "/">home</a></h3></div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="text-align: center;"><h3><a href = "/camera/add-photo">camera</a></h3></div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="text-align: center;">
             <h3 >Hi, <a href = "/profile/index"><?php echo $_SESSION['logged_user']['user_name'] ?></a>
             <h3><a href = "/authorization/log-out">sign out</a></h3>
         </div>

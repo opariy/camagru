@@ -43,19 +43,18 @@ class Home extends \Core\Controller {
     }
 
 
-    public function postAction () {
+    public function postAction() {
 
-        $photo_id = $this->route_params['id'];
-        $photo = PhotoModel::getPhotoById($photo_id);
-        if (!$photo) {
-            header("Location: /");
-        }
-        else {
-            $photo_path = "/downloads/". $photo['user_id']. "/". $photo['name'];
+        if (array_key_exists('id', $this->route_params)) {
+            $photo_id = $this->route_params['id'];
+            $photo = PhotoModel::getPhotoById($photo_id);
+            $photo_path = "/downloads/" . $photo['user_id'] . "/" . $photo['name'];
             $author_user_name = UserModel::getUserById($photo['user_id'])['user_name'];
-            $picture[] = ['likes' => $photo['likes'], 'path' => $photo_path, 'user_id' => $photo['user_id'], 'photo_id'=> $photo['id'], 'author_user_name' => $author_user_name];
+            $picture[] = ['likes' => $photo['likes'], 'path' => $photo_path, 'user_id' => $photo['user_id'], 'photo_id' => $photo['id'], 'author_user_name' => $author_user_name];
             $args['picture'] = $picture;
             View::render('post.php', $args);
+        } else {
+            header("Location: /");
         }
     }
 

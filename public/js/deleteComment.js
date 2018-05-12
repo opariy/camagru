@@ -41,7 +41,7 @@ function deleteImage(photoId) {
 
 
 function deleteComment(elem) {
-    console.log(elem);
+    // console.log(elem);
     var xmlhttp = getXmlHttp()
     xmlhttp.open('post', '/camera/delete-comment', true);
     xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
@@ -51,7 +51,7 @@ function deleteComment(elem) {
         }
     };
     xmlhttp.send("comment_id=" + elem.dataset.deleteCommentId);
-    console.log(document.getElementById(elem.id).className);
+    // console.log(document.getElementById(elem.id).className);
     document.getElementById(elem.id).classList.remove("delete_comment");
     document.getElementById(elem.id).classList.add("comment_deleted");
     elem.style.color = "red";

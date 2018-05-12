@@ -174,6 +174,19 @@ if (isset($_POST['submit'])) {
 
     }
 
+    .comment .textarea {
+        overflow: hidden;
+        zoom: 1;
+    }
+
+    .comment-content {
+        float: left;
+    }
+
+    .comment-right {
+        float: right;
+    }
+
     .delete_comment {
 
 
@@ -204,7 +217,7 @@ if (isset($_POST['submit'])) {
         /*margin-left: 50px;*/
     }
 
-    .comment_deleted {
+    .comment_deleted a {
 
 
         /*background-image: url("/img/icons.png");*/
@@ -277,12 +290,14 @@ if (isset($_POST['submit'])) {
                 $max_comment_or_3 = 3;
             }
             ?>
-            <div class="comment"></div>
+
             <?php            for ($count = 0; $count < $max_comment_or_3; $count++) { ?>
-                <div class="textarea">
-                    <b>@<?php echo $comments[$count]['user_name'] ?> </b>: <?php echo $comments[$count]['body'] ?>
-                    <div>
-                        <a class="delete_comment" id="comment<?php echo $comments[$count]['id']; ?>" data-delete-comment-id="<?= $comments[$count]['id']; ?>"  onclick ="deleteComment(this)">Delete Comment</a>
+                <div class="comment">
+                    <div class="textarea">
+                        <div class="comment-content"><b>@<?php echo $comments[$count]['user_name'] ?> </b>: <?php echo $comments[$count]['body'] ?></div>
+                        <div class="comment-right">
+                            <a class="delete_comment" id="comment<?php echo $comments[$count]['id']; ?>" data-delete-comment-id="<?= $comments[$count]['id']; ?>"  onclick ="deleteComment(this)">Delete Comment</a>
+                        </div>
                     </div>
                 </div>
             <?php }

@@ -141,24 +141,24 @@ else
         /*margin-left: 50px;*/
 
     }
-    .pagination {
-        width: auto;
-        max-width: 400px;
-        margin: 20px auto;
+
+    #user_photo {
+        /*color: gray;*/
+        text-align: center;
     }
 
 </style>
-<div>
-    <?php echo UserModel::getUserById($user_id)['user_name'] ?>'s photos
-</div>
 <div class="container">
+    <h3 id="user_photo">
+        <?php echo UserModel::getUserById($user_id)['user_name'] ?>'s photos
+    </h3>
     <div class="row">
-<?php
+        <?php
     $photos = PhotoModel::getAllUserPhotos($user_id);
     $count = PhotoModel::countAllUserPhotos($user_id);
 
     for ($i=0; $i<$count; $i++) { ?>
-        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="margin: 0 auto;">
 <!--            <img src="--><?php //echo '/downloads/' . $user_id . '/' . $photos[$i]['name']; ?><!--">-->
             <div class="img-table"><a href="/../home/<?php echo $photos[$i]['id'] ?>/post"><img src="<?php echo '/downloads/' . $user_id . '/' . $photos[$i]['name']; ?>"></a></div>
         </div>

@@ -26,8 +26,8 @@ else
 <body>
 <div class="container">
     <div class="row" id="nav">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><h3><a href = "/">home</a></h3></div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="text-align: right;">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="text-align: center;"><h3><a href = "/">home</a></h3></div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="text-align: center;">
             <h3><a href = "/Authorization/log-in">log in</a></h3>
             <h3><a href = "/Authorization/sign-up">sign up</a></h3>
         </div>
